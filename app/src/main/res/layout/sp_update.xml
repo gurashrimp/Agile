@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvSPUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="SỬA SẢN PHẨM"
+        android:textSize="35sp"
+        android:textAlignment="center"
+        android:background="@android:color/holo_orange_dark"/>
+    <EditText
+        android:id="@+id/etIdUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint=""
+        android:layout_marginTop="8dp"/>
+    <EditText
+        android:id="@+id/etTenUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Nhập tiêu đề"
+        android:layout_marginTop="8dp"/>
+    <EditText
+        android:id="@+id/etGiaUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Nhập ngày"
+        android:layout_marginTop="8dp"/>
+
+    <EditText
+        android:id="@+id/etMotaUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Nhập mô tả"
+        android:layout_marginTop="8dp"/>
+    <Spinner
+        android:id="@+id/spnLoaiUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btnEditGD"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_margin="8dp"
+            android:text="Sửa"/>
+        <Button
+            android:id="@+id/btnCancelGDUpdate"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_margin="8dp"
+            android:text="Hủy"/>
+    </LinearLayout>
+</LinearLayout>

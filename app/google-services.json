@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1040612889797",
+    "project_id": "herogame-f7abd",
+    "storage_bucket": "herogame-f7abd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040612889797:android:d5d895e381f936b83f8cac",
+        "android_client_info": {
+          "package_name": "com.example.herogame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1040612889797-rg22m4qq6gfc2qep3i8q70epapfgl4r4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSE_BRO1bD6hqc7lv7At-xFcl11s1Dx30"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1040612889797-rg22m4qq6gfc2qep3i8q70epapfgl4r4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

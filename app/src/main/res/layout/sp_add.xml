@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvSP"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="THÊM SẢN PHẨM"
+        android:textSize="35sp"
+        android:textAlignment="center"
+        android:background="@android:color/holo_orange_dark"/>
+    <EditText
+        android:id="@+id/etId"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Nhập id sản phẩm"
+        android:layout_marginTop="8dp"/>
+    <EditText
+        android:id="@+id/etTen"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Nhập tên sản phẩm"
+        android:layout_marginTop="8dp"/>
+    <EditText
+        android:id="@+id/etGia"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Nhập giá"
+        android:layout_marginTop="8dp"/>
+        <EditText
+        android:id="@+id/etMota"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Nhập loại"
+        android:layout_marginTop="8dp"/>
+    <Spinner
+        android:id="@+id/spnLoai"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btnAddGD"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_margin="8dp"
+            android:text="Thêm mới"/>
+        <Button
+            android:id="@+id/btnCancelGD"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_margin="8dp"
+            android:text="Hủy"/>
+    </LinearLayout>
+</LinearLayout>
