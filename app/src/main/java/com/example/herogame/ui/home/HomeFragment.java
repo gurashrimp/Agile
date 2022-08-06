@@ -1,13 +1,22 @@
 package com.example.herogame.ui.home;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.app.Dialog;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +34,8 @@ import com.example.herogame.adapter.ProductsAdapter;
 import com.example.herogame.databinding.FragmentHomeBinding;
 import com.example.herogame.model.Products;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.ChildEventListener;
@@ -32,6 +43,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,14 +57,21 @@ public class HomeFragment extends Fragment {
     private ProductsAdapter productAdapter;
     private List<Products> productList;
     String strName,strPrice, strTyp, strId;
+    private Uri imgUri;
+    ProgressBar progressBar;
+    private  Button btnUpload;
+    private ImageView ivProduct;
+    private  StorageReference strRef= FirebaseStorage.getInstance().getReference();
     @Nullable
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         rcvProducts = view.findViewById(R.id.rcvProduct);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         rcvProducts.setLayoutManager(linearLayoutManager);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
         rcvProducts.addItemDecoration(dividerItemDecoration);
+
         productList = new ArrayList<Products>();
         productAdapter = new ProductsAdapter(productList,new ProductsAdapter.IClickListener() {
             @Override
@@ -72,6 +94,7 @@ public class HomeFragment extends Fragment {
         });
         getAll();
         return view;
+
     }
 
     private void getAll() {
@@ -171,7 +194,7 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 FirebaseDatabase database = FirebaseDatabase.getInstance("https://herogame-f7abd-default-rtdb.asia-southeast1.firebasedatabase.app/");
                 DatabaseReference myRef = database.getReference("products");
-                int newId = Integer.parseInt(edtId.getText().toString().trim());
+                String newId = (edtId.getText().toString().trim());
                 String newName = edtName.getText().toString().trim();
                 int newPrice = Integer.parseInt(edtPrice.getText().toString().trim());
                 String newType = edtType.getText().toString().trim();
@@ -212,16 +235,24 @@ public class HomeFragment extends Fragment {
         EditText edtType = view.findViewById(R.id.etMota);
         Button btnSave = view.findViewById(R.id.btnAddGD);
         Button btnCancel = view.findViewById(R.id.btnCancelGD);
+        btnUpload=view.findViewById(R.id.btnUpload);
+        ivProduct= view.findViewById(R.id.ivProduct);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 FirebaseDatabase database = FirebaseDatabase.getInstance("https://herogame-f7abd-default-rtdb.asia-southeast1.firebasedatabase.app/");
                 DatabaseReference myRef = database.getReference("products");
-                strId=edtId.getText().toString().trim();
+                strId= myRef.push().getKey();
                 strName=edtName.getText().toString().trim();
                 strPrice= edtPrice.getText().toString().trim();
                 strTyp=edtType.getText().toString().trim();
-                Products product=new Products(0+Integer.parseInt(strId),""+strName,Integer.parseInt(strPrice)+0,""+strTyp);
+                if(imgUri!=null){
+                    uploadToFirebase(imgUri);
+                }else{
+                    Toast.makeText(getActivity(),"Bạn cần chọn 1 tấm",Toast.LENGTH_SHORT).show();
+                }
+                Products product=new Products(""+strId,""+strName,Integer.parseInt(strPrice)+0,""+strTyp,""+imgUri.toString());
                 String pathObject = String.valueOf(product.getId_product());
 
                 myRef.child(pathObject).updateChildren(product.toMap(), new DatabaseReference.CompletionListener() {
@@ -241,7 +272,57 @@ public class HomeFragment extends Fragment {
                 dialog.dismiss();
             }
         });
+        ivProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent galleryIntent=new Intent();
+                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                galleryIntent.setType("image/*");
+                startActivityForResult(galleryIntent,2);
+            }
+        });
+
         dialog.show();
+
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==2 && resultCode==RESULT_OK && data!=null){
+            imgUri=data.getData();
+            ivProduct.setImageURI(imgUri);
+        }
+    }
+    private void uploadToFirebase(Uri uri){
+        StorageReference fileRef=strRef.child(System.currentTimeMillis() + "." + getFileExtension(uri));
+        fileRef.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    fileRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Products product=new Products(""+strId,""+strName,Integer.parseInt(strPrice)+0,""+strTyp,""+imgUri.toString() );
+                            Toast.makeText(getActivity(),"Tải lên thành công",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            }
+        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+                Toast.makeText(getActivity(),"Tải lên thất bại",Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private String getFileExtension(Uri mUri){
+        ContentResolver cr= getActivity().getContentResolver();
+        MimeTypeMap mime= MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cr.getType(mUri));
     }
     private void onClickDeleteData(Products product) {
         new AlertDialog.Builder(getActivity())
@@ -266,4 +347,5 @@ public class HomeFragment extends Fragment {
 
 
     }
+
 }

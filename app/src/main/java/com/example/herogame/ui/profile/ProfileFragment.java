@@ -32,7 +32,7 @@ public class ProfileFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
 //get current user
         final FirebaseUser user =
-                FirebaseAuth.getInstance().getCurrentUser();
+              auth.getCurrentUser();
         authListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth
@@ -52,6 +52,7 @@ public class ProfileFragment extends Fragment {
            @Override
            public void onClick(View view) {
                signout();
+
            }
        });
 
@@ -61,6 +62,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void signout() {
-        auth.signOut();
+        FirebaseAuth.getInstance().signOut();
+        Intent i=new Intent(getContext(),Login.class);
+        startActivity(i);
     }
 }
